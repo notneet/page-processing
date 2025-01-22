@@ -4,6 +4,7 @@ import {
   OnModuleDestroy,
   OnModuleInit,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { freemem, totalmem } from 'os';
 import { Browser, chromium, Page } from 'playwright';
 import { BrowserPage, PageState, ScrollOptions } from './types/browser.type';
@@ -16,8 +17,12 @@ export class BrowserService implements OnModuleInit, OnModuleDestroy {
   private readonly RAM_THRESHOLD = 80; // 80% RAM usage threshold
   private monitoringInterval: ReturnType<typeof setInterval>;
 
-  constructor() {
+  constructor(private readonly configService: ConfigService) {
     this.startResourceMonitoring();
+  }
+
+  private get browserHeadless() {
+    return this.configService.get<string>('HEADLESS', 'true') === 'true';
   }
 
   async onModuleInit() {
@@ -37,7 +42,7 @@ export class BrowserService implements OnModuleInit, OnModuleDestroy {
         '--disable-accelerated-2d-canvas',
         '--disable-gpu',
       ],
-      headless: false,
+      headless: this.browserHeadless,
     });
   }
 
