@@ -1,3 +1,23 @@
+```bash
+[POST] http://localhost:3000/goto
+```
+```json
+{
+    "url": "https://otakudesu.cloud/episode/skm-episode-3-sub-indo/",
+    "wait_for_selector": "div.responsive-embed-stream",
+    "max_scrolls": 1,
+    "options": [
+        {
+            "click_element": "ul.m720p",
+            "close_new_page": true
+        },
+        {
+            "click_element": "//ul[@class='m720p']//a[text()='pdrain ']"
+        }
+    ]
+}
+```
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
