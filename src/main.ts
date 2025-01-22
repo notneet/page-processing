@@ -13,6 +13,9 @@ async function setupApp(): Promise<[number, LogLevel[]]> {
   const logger: LogLevel[] = isDev
     ? ['log', 'error', 'warn', 'fatal', 'verbose', 'debug']
     : ['log', 'error', 'warn', 'fatal', 'verbose'];
+
+  await configModule.close();
+
   return [port, logger];
 }
 
