@@ -356,7 +356,7 @@ export class BrowserService implements OnModuleInit, OnModuleDestroy {
           const newPage = await newPagePromise;
           await newPage.close();
         } catch (error) {
-          console.log('No new page opened or timeout reached');
+          this.logger.debug('No new page opened or timeout reached');
         }
       } else {
         // Normal click without new page handling
