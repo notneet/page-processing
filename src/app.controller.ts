@@ -4,6 +4,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   HttpStatus,
   Logger,
   Post,
@@ -23,6 +24,7 @@ export class AppController {
   ) {}
 
   @Post('goto')
+  @HttpCode(HttpStatus.OK)
   async createPage(
     @Body() body: GotoDto,
   ): Promise<ApiResponse<{ html: string }>> {

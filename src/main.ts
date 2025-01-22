@@ -4,7 +4,9 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
 async function setupApp(): Promise<[number, LogLevel[]]> {
-  const configModule = await NestFactory.createApplicationContext(ConfigModule);
+  const configModule = await NestFactory.createApplicationContext(
+    ConfigModule.forRoot(),
+  );
   const configService = configModule.get(ConfigService);
   const port = configService.get<number>('APP_PORT', 3000);
   const isDev = configService.get<string>('NODE_ENV') === 'development';

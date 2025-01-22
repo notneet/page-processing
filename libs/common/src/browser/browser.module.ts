@@ -4,7 +4,7 @@ import { BrowserController } from './browser.controller';
 import { BrowserService } from './browser.service';
 
 @Module({
-  imports: [ConfigModule],
+  imports: [ConfigModule.forRoot()],
   controllers: [BrowserController],
   providers: [BrowserService],
   exports: [BrowserService],
