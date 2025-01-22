@@ -9,8 +9,8 @@ async function setupApp(): Promise<[number, LogLevel[]]> {
   const port = configService.get<number>('APP_PORT', 3000);
   const isDev = configService.get<string>('NODE_ENV') === 'development';
   const logger: LogLevel[] = isDev
-    ? ['log', 'error', 'warn', 'debug']
-    : ['log', 'error', 'warn'];
+    ? ['log', 'error', 'warn', 'debug', 'fatal', 'verbose']
+    : ['log', 'error', 'warn', 'debug', 'fatal'];
   return [port, logger];
 }
 
