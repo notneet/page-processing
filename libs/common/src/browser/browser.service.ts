@@ -16,6 +16,7 @@ export class BrowserService implements OnModuleInit, OnModuleDestroy {
   private pages: Map<string, BrowserPage> = new Map();
   private readonly RAM_THRESHOLD = 80; // 80% RAM usage threshold
   private monitoringInterval: ReturnType<typeof setInterval>;
+  private readonly blockedResources = ['stylesheet', 'image', 'media', 'font'];
 
   constructor(private readonly configService: ConfigService) {
     this.startResourceMonitoring();
@@ -23,6 +24,12 @@ export class BrowserService implements OnModuleInit, OnModuleDestroy {
 
   private get browserHeadless() {
     return this.configService.get<string>('HEADLESS', 'true') === 'true';
+  }
+
+  private get ignoreResouces() {
+    return (
+      this.configService.get<string>('IGNORE_RESOURCES', 'false') === 'true'
+    );
   }
 
   async onModuleInit() {
@@ -109,6 +116,10 @@ export class BrowserService implements OnModuleInit, OnModuleDestroy {
     const page = await this.browser.newPage();
     const id = Math.random().toString(36).substring(7);
 
+    if (this.ignoreResouces) {
+      await this.interceptResouce(page);
+    }
+
     this.pages.set(id, {
       page,
       state: PageState.IDLE,
@@ -133,6 +144,23 @@ export class BrowserService implements OnModuleInit, OnModuleDestroy {
       browserPage.state = PageState.DONE;
       browserPage.lastUsed = new Date();
     }
+  }
+
+  async interceptResouce(page: Page) {
+    // intercept incoming request
+    await page.route('**/*', (route) => {
+      const request = route.request();
+      const resouceType = route.request().resourceType();
+
+      if (
+        this.blockedResources.includes(resouceType) &&
+        request.url().startsWith('http')
+      ) {
+        route.abort();
+      } else {
+        route.continue();
+      }
+    });
   }
 
   async closePage(id: string) {
